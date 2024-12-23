@@ -1,0 +1,139 @@
+[gd_scene load_steps=23 format=3 uid="uid://bu6coaei501d0"]
+
+[ext_resource type="Script" path="res://scripts/view.gd" id="1_60crw"]
+[ext_resource type="Script" path="res://scripts/player3D.gd" id="1_kqud2"]
+[ext_resource type="Texture2D" uid="uid://dj646rr2xw4du" path="res://scripts/Anime_equirectangular-jpg_ceu_azul_com_nuvens_908034557_10452884.jpg" id="3_mirye"]
+[ext_resource type="PackedScene" uid="uid://c4fba1hyqkstw" path="res://Models/personagens/models/gdbot/gdbot.glb" id="3_vucve"]
+[ext_resource type="Script" path="res://addons/virtual_joystick/scripts/virtual_joystick.gd" id="4_4p0mu"]
+[ext_resource type="Texture2D" uid="uid://dhpl0sn33nvti" path="res://mais.png" id="5_4sk33"]
+[ext_resource type="PackedScene" uid="uid://b6h5wqncbjhoq" path="res://cart_2.tscn" id="6_4mmpk"]
+[ext_resource type="Texture2D" uid="uid://7flbni4melf6" path="res://images (70).png" id="6_5vm1x"]
+[ext_resource type="Texture2D" uid="uid://e4bvinexrsao" path="res://menos.png" id="8_h330v"]
+[ext_resource type="AudioStream" uid="uid://stjderlg2c6" path="res://som/musica.wav" id="10_jgir5"]
+[ext_resource type="Script" path="res://scripts/som_jogo.gd" id="11_vkjm1"]
+[ext_resource type="AudioStream" uid="uid://cxbq0twfac6b1" path="res://som/pulo.wav" id="12_ulaej"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s2vee"]
+albedo_color = Color(0.486275, 1, 0.27451, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_p374o"]
+material = SubResource("StandardMaterial3D_s2vee")
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_knux6"]
+data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g2em8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5hrg3"]
+albedo_color = Color(0.781804, 0.111678, 0.184595, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_hgqdt"]
+material = SubResource("StandardMaterial3D_5hrg3")
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_ngedm"]
+panorama = ExtResource("3_mirye")
+
+[sub_resource type="Sky" id="Sky_cgujn"]
+sky_material = SubResource("PanoramaSkyMaterial_ngedm")
+
+[sub_resource type="Environment" id="Environment_b5pn1"]
+background_mode = 2
+sky = SubResource("Sky_cgujn")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uuhtp"]
+
+[node name="jogo" type="Node3D"]
+
+[node name="camera_trip" type="Node3D" parent="." node_paths=PackedStringArray("target")]
+script = ExtResource("1_60crw")
+target = NodePath("../player3D")
+zoom_maximum = 2
+min_rotacao_x = -30
+
+[node name="Camera" type="Camera3D" parent="camera_trip"]
+
+[node name="chao" type="MeshInstance3D" parent="."]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+mesh = SubResource("PlaneMesh_p374o")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="chao"]
+
+[node name="colisao" type="CollisionShape3D" parent="chao/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_knux6")
+
+[node name="player3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("view")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.523999, 1.60972, -0.295737)
+script = ExtResource("1_kqud2")
+view = NodePath("../camera_trip")
+
+[node name="gdbot" parent="player3D" instance=ExtResource("3_vucve")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.0355, 0)
+
+[node name="colisao" type="CollisionShape3D" parent="player3D"]
+shape = SubResource("CapsuleShape3D_g2em8")
+
+[node name="objeto_player" type="MeshInstance3D" parent="player3D"]
+visible = false
+mesh = SubResource("CapsuleMesh_hgqdt")
+skeleton = NodePath("../..")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_b5pn1")
+
+[node name="luz" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.998477, -0.0410225, 0.036886, -0.0338184, 0.0731129, 0.99675, -0.043586, -0.99648, 0.0716142, 0.141945, 9.00298, 0.162899)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="mais" type="TouchScreenButton" parent="CanvasLayer"]
+position = Vector2(1051, 2.71051e-20)
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("5_4sk33")
+texture_pressed = ExtResource("5_4sk33")
+action = "zoom_in"
+
+[node name="pular" type="TouchScreenButton" parent="CanvasLayer"]
+position = Vector2(984, 488)
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("6_5vm1x")
+texture_pressed = ExtResource("6_5vm1x")
+action = "ui_accept"
+
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VirtualJoystick" type="Node2D" parent="CanvasLayer/Control"]
+position = Vector2(128, 520)
+script = ExtResource("4_4p0mu")
+
+[node name="menos" type="TouchScreenButton" parent="CanvasLayer"]
+position = Vector2(924, 0)
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("8_h330v")
+texture_pressed = ExtResource("8_h330v")
+action = "zoom_out"
+
+[node name="cart2" parent="." instance=ExtResource("6_4mmpk")]
+transform = Transform3D(1.40252, 0, 0, 0, 1, 0, 0, 0, 1.16781, 0, 1.4897, 2.97727)
+
+[node name="RigidBody3D" type="RigidBody3D" parent="cart2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="cart2/RigidBody3D"]
+shape = SubResource("BoxShape3D_uuhtp")
+
+[node name="som_jogo" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_jgir5")
+volume_db = -4.26
+autoplay = true
+script = ExtResource("11_vkjm1")
+
+[node name="som_pulo" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_ulaej")
+
+[connection signal="analogic_chage" from="CanvasLayer/Control/VirtualJoystick" to="player3D" method="_on_virtual_joystick_analogic_chage"]
+[connection signal="finished" from="som_jogo" to="som_jogo" method="_on_finished"]

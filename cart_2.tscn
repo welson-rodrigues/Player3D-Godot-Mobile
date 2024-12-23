@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6h5wqncbjhoq"]
+
+[ext_resource type="PackedScene" uid="uid://dfhc7xb5pp7ft" path="res://Models/modelos/cart.glb" id="1_xrvc3"]
+
+[node name="cart2" instance=ExtResource("1_xrvc3")]

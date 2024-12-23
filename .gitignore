@@ -1,0 +1,12 @@
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Diretórios
+.import/
+.export/
+
+# Godot 4+ specific ignores
+.mono/
+.godot/
+/android/
